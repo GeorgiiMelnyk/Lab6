@@ -8,9 +8,10 @@ import java.awt.event.ActionListener;
 
 public class SetCordsWindow extends JDialog {
 
-
+    private Object_1 parentFrame;
     public SetCordsWindow(Object_1 parentFrame){
         super(parentFrame, "Впишіть значення", true);
+        this.parentFrame = parentFrame;
         createDialog();
         this.setVisible(true);
     }
@@ -83,40 +84,62 @@ public class SetCordsWindow extends JDialog {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
+
+        JButton acceptButton = initAcceptButton(pointsField, xMinField, xMaxField, yMinField, yMaxField);
+        panel.add(acceptButton, gbc);
+
+        return panel;
+    }
+
+    private JButton initAcceptButton(JTextField pointsField, JTextField xMinField,
+                                     JTextField xMaxField, JTextField yMinField, JTextField yMaxField){
         JButton acceptButton = new JButton("Відправити");
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Получаем значения из текстовых полей
+
                 String pointsText = pointsField.getText();
                 String xminText = xMinField.getText();
                 String xmaxText = xMaxField.getText();
                 String yminText = yMinField.getText();
                 String ymaxText = yMaxField.getText();
 
-                // Преобразуем текст в необходимые типы данных
-                int points = Integer.parseInt(pointsText);
-                double xmin = Double.parseDouble(xminText);
-                double xmax = Double.parseDouble(xmaxText);
-                double ymin = Double.parseDouble(yminText);
-                double ymax = Double.parseDouble(ymaxText);
+                try {
+                    int points = Integer.parseInt(pointsText);
+                    double xmin = Double.parseDouble(xminText);
+                    double xmax = Double.parseDouble(xmaxText);
+                    double ymin = Double.parseDouble(yminText);
+                    double ymax = Double.parseDouble(ymaxText);
 
-                // Далее вы можете использовать полученные значения
-                System.out.println("Points: " + points);
-                System.out.println("Xmin: " + xmin);
-                System.out.println("Xmax: " + xmax);
-                System.out.println("Ymin: " + ymin);
-                System.out.println("Ymax: " + ymax);
+                    if(isCorrectData(points, xmin, xmax, ymin, ymax)){
+                        parentFrame.setDatasToUpdate(points, xmin, xmax, ymin, ymax);
+                    }
 
-                dispose();
+                    dispose();
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Будь ласка введіть всі значення",
+                            "Неправильно введені значення", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         acceptButton.setFocusPainted(false);
-        panel.add(acceptButton, gbc);
-        return panel;
+        return acceptButton;
     }
 
 
+    private boolean isCorrectData(int points, double xmin, double xmax, double ymin, double ymax){
+        if(points <= 1){
+            JOptionPane.showMessageDialog(null, "Кількість точок має бути більше за 1",
+                    "Неправильно введені значення", JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else if (xmin > xmax || ymin > ymax){
+            JOptionPane.showMessageDialog(null, "Значення Xmin і Ymin мають бути менші за Xmax і Ymax",
+                    "Неправильно введені значення", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
 
 }

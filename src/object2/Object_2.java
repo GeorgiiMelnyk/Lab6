@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class Object_2 implements Runnable{
 
-
+    private String receivedDatas;
     @Override
     public void run() {
         try {
@@ -18,6 +18,7 @@ public class Object_2 implements Runnable{
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
+
                 System.out.println("Подключен клиент: " + clientSocket.getInetAddress());
 
                 handleClient(clientSocket);
@@ -41,14 +42,17 @@ public class Object_2 implements Runnable{
             // Пример чтения данных от клиента
             byte[] buffer = new byte[1024];
             int bytesRead;
+            String receivedData = "";
             while ((bytesRead = inputStream.read(buffer)) != -1) {
-                String receivedData = new String(buffer, 0, bytesRead);
-                System.out.println("Получены данные от клиента: " + receivedData);
+                receivedData = new String(buffer, 0, bytesRead);
+
+                //System.out.println("Получены данные от клиента: " + receivedData);
                 new Object2Window();
                 // Обработка данных и отправка ответа клиенту
                 /*String responseData = "Данные получены успешно";
                 outputStream.write(responseData.getBytes());*/
             }
+            System.out.println("Получены данные от клиента: " + receivedData);
         } catch (IOException e) {
             e.printStackTrace();
         }

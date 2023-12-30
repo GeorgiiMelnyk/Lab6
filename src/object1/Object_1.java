@@ -11,20 +11,17 @@ import java.net.Socket;
 public class Object_1 extends JFrame {
 
     private static Object_1 instance;
-    private SetCordsWindow setCordsWindow;
-    private Socket socketObject2;
-    private Image icon = new ImageIcon("res/Lab6ImageIcon.png").getImage();
+    private Thread object2;
+    private final Image icon = new ImageIcon("res/Lab6ImageIcon.png").getImage();
 
     private Object_1(){
         super("Lab6");
         createFrame();
+
+        object2 = new Thread(new Object_2());
+        object2.start();
+
         this.setVisible(true);
-        Thread thread = new Thread(new Object_2());
-        thread.start();
-        //createConectionWithObj2();
-        pushUpdates();
-        pushUpdates();
-        pushUpdates();
     }
 
     public static Object_1 getInstance(){
@@ -48,7 +45,7 @@ public class Object_1 extends JFrame {
         createCordButton.setFocusPainted(false);
         createCordButton.setForeground(Color.BLACK);
         createCordButton.addActionListener(e -> {
-                setCordsWindow = new SetCordsWindow(this);
+                new SetCordsWindow(this);
         } );
 
         toolBar.add(createCordButton);
@@ -57,21 +54,13 @@ public class Object_1 extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void createConectionWithObj2(){
-        try{
-            socketObject2 = new Socket("localhost", 12345);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-    }
-    private void pushUpdates(){
+    private void pushUpdates(String dataToSend){
         try {
              // IP и порт сервера
             Socket socket = new Socket("localhost", 12345);
             // Отправка данных на сервер
             OutputStream outputStream = socket.getOutputStream();
-            String dataToSend = "Привет, сервер!";
             outputStream.write(dataToSend.getBytes());
             socket.close();
             // Закрываем соединение и завершаем выполнение программы
@@ -79,7 +68,21 @@ public class Object_1 extends JFrame {
             e.printStackTrace();
         }
 
+    }
 
+    public void setDatasToUpdate(int points, double xMin, double xMax, double yMin, double yMax){
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(points).append("|");
+        stringBuilder.append(xMin).append("|");
+        stringBuilder.append(xMax).append("|");
+        stringBuilder.append(yMin).append("|");
+        stringBuilder.append(yMax);
+
+        String result = stringBuilder.toString();
+
+        pushUpdates(result);
     }
 
 }
