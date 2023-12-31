@@ -14,7 +14,7 @@ public class Object3Window extends JFrame {
     protected Object3Window(Object_3 object3, double[] xList, double[] yList){
 
         this.setTitle("Object3");
-        this.setBounds(900, 200, 600, 400);
+        this.setBounds(900, 200, 615, 450);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setIconImage(icon);
         this.addWindowListener(new WindowAdapter() {
@@ -41,8 +41,9 @@ public class Object3Window extends JFrame {
 
     private double[] xList;
     private double[] yList;
-    private final Stroke AXIS_STROKE = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    private final Stroke AXIS_STROKE = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
     private final Stroke GRAPHIC_STROKE = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+
     protected GraphPanel(double[] xList, double[] yList){
         this.xList = xList;
         this.yList = yList;
@@ -57,8 +58,14 @@ public class Object3Window extends JFrame {
         g2.setColor(Color.black);
         g2.setStroke(AXIS_STROKE);
 
-        g2.draw(new Line2D.Double(new Point2D.Double(0.0, 360.0), new Point2D.Double(600, 360.0)));
-        g2.draw(new Line2D.Double(new Point2D.Double(3.0, 400.0), new Point2D.Double(3.0, 0.0)));
+        g2.draw(new Line2D.Double(new Point2D.Double(-800.0, 400.0), new Point2D.Double(600, 400.0)));
+        g2.draw(new Line2D.Double(new Point2D.Double(10.0, 600.0), new Point2D.Double(10.0, 0.0)));
+
+        g2.draw(new Line2D.Double(new Point2D.Double(0.0, 15.0), new Point2D.Double(10.0, 0.0)));
+        g2.draw(new Line2D.Double(new Point2D.Double(10.0, 0.0), new Point2D.Double(20.0, 15.0)));
+
+        g2.draw(new Line2D.Double(new Point2D.Double(600.0, 400.0), new Point2D.Double(585.0, 390.0)));
+        g2.draw(new Line2D.Double(new Point2D.Double(600.0, 400.0), new Point2D.Double(585.0, 410.0)));
 
         g2.setColor(Color.RED);
         g2.setStroke(GRAPHIC_STROKE);
@@ -68,8 +75,8 @@ public class Object3Window extends JFrame {
             if(i == xList.length - 1){
                 break;
             } else {
-                Point2D point1 = new Point2D.Double(xList[i], yList[i]);
-                Point2D point2 = new Point2D.Double(xList[i + 1], yList[i + 1]);
+                Point2D point1 = new Point2D.Double((xList[i] + 10), (400.0 - yList[i]));
+                Point2D point2 = new Point2D.Double((xList[i + 1] + 10), (400.0 - yList[i + 1]));
                 g2.draw(new Line2D.Double(point1, point2));
             }
         }
