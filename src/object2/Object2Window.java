@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 public class Object2Window extends JFrame {
     private JTextArea textArea = new JTextArea();
@@ -12,7 +11,7 @@ public class Object2Window extends JFrame {
     private double[] xList;
     private double[] yList;
 
-    public Object2Window(Object_2 object2, double[] xList, double[] yList) {
+    protected Object2Window(Object_2 object2, double[] xList, double[] yList) {
         this.setTitle("Object2");
         this.setBounds(600, 200, 250, 300);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -20,7 +19,7 @@ public class Object2Window extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e){
-                object2.setObject2Window(null);
+                object2.destroyObject2Window();
             }
         });
 
@@ -40,7 +39,7 @@ public class Object2Window extends JFrame {
         setVisible(true);
     }
 
-    public void setTextArea(double[] xList, double[] yList ){
+    protected void setTextArea(double[] xList, double[] yList ){
 
         String result;
         StringBuilder stringBuilder = new StringBuilder();

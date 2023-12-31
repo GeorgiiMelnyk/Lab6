@@ -112,7 +112,7 @@ public class SetCordsWindow extends JDialog {
                     double ymax = Double.parseDouble(ymaxText);
 
                     if(isCorrectData(points, xmin, xmax, ymin, ymax)){
-                        parentFrame.setDatasToUpdate(points, xmin, xmax, ymin, ymax);
+                        parentFrame.setDatasToUpdateObject_2(points, xmin, xmax, ymin, ymax);
                     }
 
                     dispose();

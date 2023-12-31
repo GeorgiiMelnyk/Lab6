@@ -1,14 +1,22 @@
 package object2;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Object_2 implements Runnable{
 
     private Object2Window object2Window;
+    private double[] xList;
+    private double[] yList;
     @Override
     public void run() {
         try {
@@ -19,7 +27,7 @@ public class Object_2 implements Runnable{
 
                 System.out.println("Подключен клиент: " + clientSocket.getInetAddress());
 
-                handleClient(clientSocket);
+                readObject_1Data(clientSocket);
 
                 clientSocket.close();
             }
@@ -29,7 +37,7 @@ public class Object_2 implements Runnable{
 
     }
 
-    private void handleClient(Socket clientSocket) {
+    private void readObject_1Data(Socket clientSocket) {
         try {
             InputStream inputStream = clientSocket.getInputStream();
 
@@ -38,12 +46,11 @@ public class Object_2 implements Runnable{
             String receivedData = "";
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 receivedData = new String(buffer, 0, bytesRead);
-
-                /*String responseData = "Данные получены успешно";
-                outputStream.write(responseData.getBytes());*/
             }
-            System.out.println("Получены данные от клиента: " + receivedData);
+            System.out.println("Получены данные от Object_1: " + receivedData);
             createWindowOrUpdate(receivedData);
+            pushUpdatesToObject_3(getFormatDataForObject_3(this.xList, this.yList));
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,15 +85,62 @@ public class Object_2 implements Runnable{
             randomYList[i] = formatedRandY;
         }
 
-        if(object2Window == null){
-            object2Window = new Object2Window(this, randomXList, randomYList);
-        }  else {
-            object2Window.setTextArea(randomXList, randomYList);
-        }
+        Arrays.sort(randomXList);
 
+        this.xList = Arrays.copyOf(randomXList, randomXList.length);
+        this.yList = Arrays.copyOf(randomYList, randomYList.length);
+
+        SwingUtilities.invokeLater(() -> {
+            if(object2Window == null){
+                object2Window = new Object2Window(this, this.xList, this.yList);
+            }  else {
+                object2Window.setTextArea(randomXList, randomYList);
+            }
+        });
     }
 
-    public void setObject2Window(Object2Window object2Window) {
-        this.object2Window = object2Window;
+    private void pushUpdateStatusToObject_3(){
+        try {
+            // IP и порт сервера
+            Socket socket = new Socket("localhost", 7000);
+            String status = "update";
+            // Отправка данных на сервер
+            OutputStream outputStream = socket.getOutputStream();
+            outputStream.write(status.getBytes());
+            socket.close();
+            // Закрываем соединение и завершаем выполнение программы
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void pushUpdatesToObject_3(String datas){
+        StringSelection stringSelection = new StringSelection(datas);
+
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+        clipboard.getContents(null);
+        clipboard.setContents(stringSelection, null);
+
+        pushUpdateStatusToObject_3();
+    }
+
+    private String getFormatDataForObject_3(double[] xList, double[] yList){
+
+        String result;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < xList.length; i++){
+            stringBuilder.append(String.valueOf(xList[i])).append(" ").append(String.valueOf(yList[i])).append("|");
+        }
+        int length = stringBuilder.length();
+        stringBuilder.deleteCharAt(length - 1);
+        result = stringBuilder.toString();
+
+        return result;
+    }
+
+    protected void destroyObject2Window() {
+        this.object2Window = null;
     }
 }
